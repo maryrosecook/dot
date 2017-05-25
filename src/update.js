@@ -7,38 +7,40 @@
         return state;
       } else {
         return pipelineInputDataAndState(input,
-                                         fns[0](input, state),
+                                         fns[0](input, state) || state,
                                          fns.slice(1));
       }
     };
 
     return pipelineInputDataAndState(input, state, [
       updateTime,
-      updateClickTime,
-      updateIsJustClicked,
-      updateIsRecentlyClicked
+      playerUpdateHeadingIfSpacePressed,
+      playerMoveIfSpacePressed,
+      playerTurnIfSpaceNotPressed
     ]);
   };
 
-  function updateClickTime(input, state) {
-    if (input.isPressed(input.LEFT_MOUSE)) {
-      return state.set("clickTime", Date.now())
-    } else {
-      return state;
+  function playerUpdateHeadingIfSpacePressed(input, state) {
+    if (input.isPressed(input.SPACE)) {
+      return state.setIn(["player", "movementAngle"],
+                         state.getIn(["player", "nextAngle"]));
     }
   };
 
-  function updateIsJustClicked(input, state) {
-    if (input.isPressed(input.LEFT_MOUSE)) {
-      return state.set("isJustClicked", true);
-    } else {
-      return state.set("isJustClicked", false);
-    }
+  function playerMoveIfSpacePressed(input, state) {
+    let velocity = Maths.vectorMultiply(
+      Maths.angleToVector(state.getIn(["player", "movementAngle"])),
+      5);
+
+    return state
+      .updateIn(["player", "position", "x"], (x) => x + velocity.x)
+      .updateIn(["player", "position", "y"], (y) => y + velocity.y)
   };
 
-  function updateIsRecentlyClicked(input, state) {
-    return state.set("isRecentlyClicked",
-                     state.get("time") - state.get("clickTime") < 100);
+  function playerTurnIfSpaceNotPressed(input, state) {
+    const TURN_RATE = 3;
+    return state.updateIn(["player", "nextAngle"],
+                          (nextAngle) => nextAngle + TURN_RATE);
   };
 
   function updateTime(input, state) {
@@ -49,7 +51,13 @@
     return im.Map({
       clickTime: 0,
       time: Date.now(),
-      song: [440, ]
+      player: im.Map({
+        position: im.Map({ x: 300, y: 300 }),
+        width: 5,
+        height: 5,
+        movementAngle: 0,
+        nextAngle: 0
+      })
     });
   };
 

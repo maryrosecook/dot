@@ -6,9 +6,6 @@
                      screen.canvas.height);
 
     drawPlayer(state, screen);
-    // if (state.get("isRecentlyClicked")) {
-    //   flashScreen(screen);
-    // }
   };
 
   function flashScreen(screen) {

@@ -22,16 +22,15 @@
 
   function drawBody(state, screen) {
     drawCircle(screen,
-               state.getIn(["player", "position", "x"]),
-               state.getIn(["player", "position", "y"]),
+               state.getIn(["player", "center"]).toJS(),
                state.getIn(["player", "width"]));
   };
 
   function drawHeading(state, screen) {
-    let end = calculateHeadingEnd(state.getIn(["player", "position"]).toJS(),
+    let end = calculateHeadingEnd(state.getIn(["player", "center"]).toJS(),
                                   state.getIn(["player", "nextAngle"]));
     drawLine(screen,
-             state.getIn(["player", "position"]).toJS(),
+             state.getIn(["player", "center"]).toJS(),
              end,
              0.5);
   };
@@ -42,9 +41,9 @@
                             endOffset);
   };
 
-  function drawCircle(screen, x, y, radius) {
+  function drawCircle(screen, center, radius) {
     screen.beginPath();
-    screen.arc(x, y, radius, 0, Math.PI * 2, true);
+    screen.arc(center.x, center.y, radius, 0, Math.PI * 2, true);
     screen.closePath();
     screen.fillStyle = "black";
     screen.fill();

@@ -33,8 +33,8 @@
       5);
 
     return state
-      .updateIn(["player", "position", "x"], (x) => x + velocity.x)
-      .updateIn(["player", "position", "y"], (y) => y + velocity.y)
+      .updateIn(["player", "center"],
+                (center) => im.Map(Maths.addVectors(center.toJS(), velocity)))
   };
 
   function playerTurnIfSpaceNotPressed(input, state) {
@@ -52,7 +52,7 @@
       clickTime: 0,
       time: Date.now(),
       player: im.Map({
-        position: im.Map({ x: 300, y: 300 }),
+        center: im.Map({ x: 300, y: 300 }),
         width: 5,
         height: 5,
         movementAngle: 0,

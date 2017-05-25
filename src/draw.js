@@ -5,29 +5,29 @@
                      screen.canvas.width,
                      screen.canvas.height);
 
-    drawPlayer(state, screen);
+    drawPlayer(state.get("player"), screen);
   };
 
   function flashScreen(screen) {
     screen.fillRect(0, 0, screen.canvas.width, screen.canvas.height)
   };
 
-  function drawPlayer(state, screen) {
-    drawBody(state, screen);
-    drawHeading(state, screen);
+  function drawPlayer(player, screen) {
+    drawBody(player, screen);
+    drawHeading(player, screen);
   };
 
-  function drawBody(state, screen) {
+  function drawBody(player, screen) {
     drawCircle(screen,
-               state.getIn(["player", "center"]).toJS(),
-               state.getIn(["player", "width"]));
+               player.getIn(["center"]).toJS(),
+               player.getIn(["width"]));
   };
 
-  function drawHeading(state, screen) {
-    let end = calculateHeadingEnd(state.getIn(["player", "center"]).toJS(),
-                                  state.getIn(["player", "nextAngle"]));
+  function drawHeading(player, screen) {
+    let end = calculateHeadingEnd(player.getIn(["center"]).toJS(),
+                                  player.getIn(["nextAngle"]));
     drawLine(screen,
-             state.getIn(["player", "center"]).toJS(),
+             player.getIn(["center"]).toJS(),
              end,
              0.5);
   };

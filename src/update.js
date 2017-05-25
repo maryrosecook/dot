@@ -14,33 +14,8 @@
 
     return pipelineInputDataAndState(input, state, [
       updateTime,
-      playerUpdateHeadingIfSpacePressed,
-      playerMoveIfSpacePressed,
-      playerTurnIfSpaceNotPressed
+      updatePlayer
     ]);
-  };
-
-  function playerUpdateHeadingIfSpacePressed(input, state) {
-    if (input.isPressed(input.SPACE)) {
-      return state.setIn(["player", "movementAngle"],
-                         state.getIn(["player", "nextAngle"]));
-    }
-  };
-
-  function playerMoveIfSpacePressed(input, state) {
-    let velocity = Maths.vectorMultiply(
-      Maths.angleToVector(state.getIn(["player", "movementAngle"])),
-      5);
-
-    return state
-      .updateIn(["player", "center"],
-                (center) => im.Map(Maths.addVectors(center.toJS(), velocity)))
-  };
-
-  function playerTurnIfSpaceNotPressed(input, state) {
-    const TURN_RATE = 3;
-    return state.updateIn(["player", "nextAngle"],
-                          (nextAngle) => nextAngle + TURN_RATE);
   };
 
   function updateTime(input, state) {

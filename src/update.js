@@ -25,14 +25,7 @@
   function setupState() {
     return im.Map({
       clickTime: 0,
-      time: Date.now(),
-      player: im.Map({
-        center: im.Map({ x: 300, y: 300 }),
-        width: 5,
-        height: 5,
-        movementAngle: 0,
-        nextAngle: 0
-      })
+      time: Date.now()
     });
   };
 

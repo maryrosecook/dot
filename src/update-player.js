@@ -3,7 +3,9 @@
 
   function updatePlayer(input, state) {
     function pipelineInputDataAndState(input, state, fns) {
-      if (fns.length === 0) {
+      if (state === undefined) {
+        return initState();
+      } else if (fns.length === 0) {
         return state;
       } else {
         return pipelineInputDataAndState(input,
@@ -12,7 +14,7 @@
       }
     };
 
-    return state.set("player", pipelineInputDataAndState(input, state.get("player"), [
+    return state.update("player", (player) => pipelineInputDataAndState(input, player, [
       playerUpdateHeadingIfSpacePressed,
       playerMoveIfSpacePressed,
       playerTurnIfSpaceNotPressed
@@ -26,6 +28,16 @@
     }
   };
 
+  function initState() {
+    return im.Map({
+      center: im.Map({ x: 300, y: 300 }),
+      width: 5,
+      height: 5,
+      movementAngle: 0,
+      nextAngle: 0
+    });
+  };
+
   function playerMoveIfSpacePressed(input, state) {
     let velocity = Maths.vectorMultiply(
       Maths.angleToVector(state.getIn(["movementAngle"])),
@@ -37,7 +49,7 @@
   };
 
   function playerTurnIfSpaceNotPressed(input, state) {
-    const TURN_RATE = 3;
+    const TURN_RATE = 5;
     return state.updateIn(["nextAngle"],
                           (nextAngle) => nextAngle + TURN_RATE);
   };

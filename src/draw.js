@@ -20,7 +20,7 @@
   function drawBody(player, screen) {
     drawCircle(screen,
                player.getIn(["center"]).toJS(),
-               player.getIn(["width"]));
+               player.getIn(["size", "x"]));
   };
 
   function drawHeading(player, screen) {

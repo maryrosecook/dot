@@ -24,8 +24,7 @@
   function initState() {
     return im.Map({
       center: im.Map({ x: 300, y: 300 }),
-      width: 5,
-      height: 5,
+      size: im.Map({ x: 5, y: 5 }),
       velocity: im.Map({ x: 0, y: 0 }),
       angle: 0
     });

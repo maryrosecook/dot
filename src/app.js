@@ -1,11 +1,11 @@
 ;(function(exports) {
   function start(window) {
-    var state = update.setupState();
     var screen = draw.setupScreen(window);
     var input = new Input(window);
+    let state;
 
     (function loopForever() {
-      state = update.update(input, state);
+      state = update(input, state);
       draw.draw(state, screen);
       input.update();
 

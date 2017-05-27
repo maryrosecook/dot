@@ -14,11 +14,11 @@
       }
     };
 
-    return state.update("player", (player) => pipelineInputDataAndState(input, player, [
+    return pipelineInputDataAndState(input, state, [
       moveWithVelocity,
       turnIfNotBoosting,
       updateVelocityIfBoosting
-    ]));
+    ]);
   };
 
   function initState() {

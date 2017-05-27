@@ -15,9 +15,9 @@
     };
 
     return state.update("player", (player) => pipelineInputDataAndState(input, player, [
-      playerUpdateHeadingIfSpacePressed,
-      playerMoveIfSpacePressed,
-      playerTurnIfSpaceNotPressed
+      updateHeadingIfSpacePressed,
+      moveIfSpacePressed,
+      turnIfSpaceNotPressed
     ]));
   };
 
@@ -31,14 +31,14 @@
     });
   };
 
-  function playerUpdateHeadingIfSpacePressed(input, state) {
+  function updateHeadingIfSpacePressed(input, state) {
     if (input.isPressed(input.SPACE)) {
       return state.setIn(["movementAngle"],
                          state.getIn(["nextAngle"]));
     }
   };
 
-  function playerMoveIfSpacePressed(input, state) {
+  function moveIfSpacePressed(input, state) {
     let velocity = Maths.vectorMultiply(
       Maths.angleToVector(state.getIn(["movementAngle"])),
       5);
@@ -48,7 +48,7 @@
                 (center) => im.Map(Maths.addVectors(center.toJS(), velocity)))
   };
 
-  function playerTurnIfSpaceNotPressed(input, state) {
+  function turnIfSpaceNotPressed(input, state) {
     const TURN_RATE = 5;
     return state.updateIn(["nextAngle"],
                           (nextAngle) => nextAngle + TURN_RATE);

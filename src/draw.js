@@ -25,7 +25,7 @@
 
   function drawHeading(player, screen) {
     let end = calculateHeadingEnd(player.getIn(["center"]).toJS(),
-                                  player.getIn(["nextAngle"]));
+                                  player.getIn(["angle"]));
     drawLine(screen,
              player.getIn(["center"]).toJS(),
              end,

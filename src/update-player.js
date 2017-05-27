@@ -15,9 +15,9 @@
     };
 
     return state.update("player", (player) => pipelineInputDataAndState(input, player, [
-      updateHeadingIfSpacePressed,
-      moveIfSpacePressed,
-      turnIfSpaceNotPressed
+      moveWithVelocity,
+      turnIfNotBoosting,
+      updateVelocityIfBoosting
     ]));
   };
 
@@ -26,32 +26,38 @@
       center: im.Map({ x: 300, y: 300 }),
       width: 5,
       height: 5,
-      movementAngle: 0,
-      nextAngle: 0
+      velocity: im.Map({ x: 0, y: 0 }),
+      angle: 0
     });
   };
 
-  function updateHeadingIfSpacePressed(input, state) {
-    if (input.isPressed(input.SPACE)) {
-      return state.setIn(["movementAngle"],
-                         state.getIn(["nextAngle"]));
+  function updateVelocityIfBoosting(input, state) {
+    if (input.isDown(input.SPACE)) {
+      const BOOST_SPEED = 0.2
+      let velocityChange = Maths.vectorMultiply(
+        Maths.angleToVector(state.getIn(["angle"])),
+        BOOST_SPEED);
+
+      return state
+        .updateIn(["velocity"],
+                  (velocity) => im.Map(Maths.addVectors(velocity.toJS(),
+                                                        velocityChange)));
+
     }
   };
 
-  function moveIfSpacePressed(input, state) {
-    let velocity = Maths.vectorMultiply(
-      Maths.angleToVector(state.getIn(["movementAngle"])),
-      5);
-
-    return state
-      .updateIn(["center"],
-                (center) => im.Map(Maths.addVectors(center.toJS(), velocity)))
+  function moveWithVelocity(input, state) {
+    return state.update("center", (center) => {
+      return im.Map(Maths.addVectors(center.toJS(), state.get("velocity").toJS()));
+    });
   };
 
-  function turnIfSpaceNotPressed(input, state) {
-    const TURN_RATE = 5;
-    return state.updateIn(["nextAngle"],
-                          (nextAngle) => nextAngle + TURN_RATE);
+  function turnIfNotBoosting(input, state) {
+    if (!input.isDown(input.SPACE)) {
+      const TURN_RATE = 5;
+      return state.updateIn(["angle"],
+                            (angle) => angle + TURN_RATE);
+    }
   };
 
   exports.updatePlayer = updatePlayer;

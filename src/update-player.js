@@ -21,13 +21,6 @@
     ]));
   };
 
-  function playerUpdateHeadingIfSpacePressed(input, state) {
-    if (input.isPressed(input.SPACE)) {
-      return state.setIn(["movementAngle"],
-                         state.getIn(["nextAngle"]));
-    }
-  };
-
   function initState() {
     return im.Map({
       center: im.Map({ x: 300, y: 300 }),
@@ -36,6 +29,13 @@
       movementAngle: 0,
       nextAngle: 0
     });
+  };
+
+  function playerUpdateHeadingIfSpacePressed(input, state) {
+    if (input.isPressed(input.SPACE)) {
+      return state.setIn(["movementAngle"],
+                         state.getIn(["nextAngle"]));
+    }
   };
 
   function playerMoveIfSpacePressed(input, state) {

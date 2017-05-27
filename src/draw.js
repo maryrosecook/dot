@@ -33,7 +33,9 @@
   };
 
   function calculateHeadingEnd(playerCenter, playerAngle) {
-    let endOffset = Maths.vectorMultiply(Maths.angleToVector(playerAngle), 20);
+    const LINE_LENGTH = 50;
+    let endOffset = Maths.vectorMultiply(Maths.angleToVector(playerAngle),
+                                         LINE_LENGTH);
     return Maths.addVectors(playerCenter,
                             endOffset);
   };

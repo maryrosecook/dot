@@ -8,6 +8,8 @@
 
     return state.update("player", (player) => {
       return updatePlayer(input, player);
+    }).update("dots", (dots) => {
+      return updateDots(input, dots);
     });
   };
 

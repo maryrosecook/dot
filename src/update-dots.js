@@ -1,21 +1,22 @@
 ;(function(exports) {
   var im = Immutable;
 
-  function updateDots(input, state) {
-    function pipelineInputDataAndState(input, state, fns) {
+  function updateDots(input, state, data) {
+    function pipelineInputDataAndState(input, state, data, fns) {
       if (state === undefined) {
         return initState();
       } else if (fns.length === 0) {
         return state;
       } else {
         return pipelineInputDataAndState(input,
-                                         fns[0](input, state) || state,
+                                         fns[0](input, state, data) || state,
+                                         data,
                                          fns.slice(1));
       }
     };
 
-    return pipelineInputDataAndState(input, state, [
-      (_, dots) => dots.map(moveWithVelocity)
+    return pipelineInputDataAndState(input, state, data, [
+      (_, dots) => dots.map(moveWithVelocity),
     ]);
   };
 

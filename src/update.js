@@ -2,19 +2,13 @@
   var im = Immutable;
 
   function update(input, state) {
-    if (!state) {
-      state = setupState();
-    }
-
     return state.update("player", (player) => {
       return updatePlayer(input, player);
     }).update("dots", (dots) => {
-      return updateDots(input, dots);
+      return updateDots(input,
+                        dots,
+                        im.Map({ size: state.get("size") }));
     });
-  };
-
-  function setupState() {
-    return im.Map({});
   };
 
   exports.update = update;

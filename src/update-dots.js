@@ -69,8 +69,8 @@
   function createDot(center) {
     return im.Map({
       center: im.Map(center),
-      size: im.Map({ x: 50, y: 50 }),
       velocity: im.Map({ x: 1, y: 2 })
+      size: im.Map({ x: 5, y: 5 }),
     });
   };
 

@@ -17,6 +17,7 @@
 
     return pipelineInputDataAndState(input, state, data, [
       (_, dots) => dots.map(moveWithVelocity),
+      wrapDots
     ]);
   };
 
@@ -29,6 +30,36 @@
     ]);
   };
 
+  function wrapDots(input, dots, data) {
+    let xScreen = data.getIn(["size", "x"]);
+    let yScreen = data.getIn(["size", "y"]);
+    return dots.map((dot) => {
+      let radius = dot.getIn(["size", "x"]) / 2;
+      let left = dot.getIn(["center", "x"]) - radius;
+      let right = dot.getIn(["center", "x"]) + radius;
+      let bottom = dot.getIn(["center", "y"]) + radius;
+      let top = dot.getIn(["center", "y"]) - radius;
+
+      if (right < 0) {
+        return dot.setIn(["center", "x"], xScreen + radius);
+      }
+
+      if (left > xScreen) {
+        return dot.setIn(["center", "x"], -radius);
+      }
+
+      if (bottom < 0) {
+        return dot.setIn(["center", "y"], yScreen + radius);
+      }
+
+      if (top > yScreen) {
+        return dot.setIn(["center", "y"], -radius);
+      }
+
+      return dot;
+    });
+  };
+
   function moveWithVelocity(dot) {
     return dot.update("center", (center) => {
       return im.Map(Maths.addVectors(center.toJS(), dot.get("velocity").toJS()));
@@ -38,14 +69,14 @@
   function createDot(center) {
     return im.Map({
       center: im.Map(center),
-      size: im.Map({ x: 5, y: 5 }),
-      velocity: im.Map({ x: randomRange(-1, 1), y: randomRange(-1, 1) })
+      size: im.Map({ x: 50, y: 50 }),
+      velocity: im.Map({ x: 1, y: 2 })
     });
   };
 
   function randomRange(min, max) {
     let range = max - min;
-    return min + Math.floor(Math.random() * range);
+    return min + Math.random() * range;
   };
 
   exports.updateDots = updateDots;

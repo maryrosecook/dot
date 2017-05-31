@@ -67,10 +67,14 @@
   };
 
   function createDot(center) {
+    let MAX_SPEED = 3;
     return im.Map({
       center: im.Map(center),
-      velocity: im.Map({ x: 1, y: 2 })
       size: im.Map({ x: 5, y: 5 }),
+      velocity: im.Map({
+        x: randomRange(-MAX_SPEED, MAX_SPEED),
+        y: randomRange(-MAX_SPEED, MAX_SPEED)
+      }),
     });
   };
 

@@ -16,6 +16,7 @@
     };
 
     return pipelineInputDataAndState(input, state, data, [
+      (_, dots) => dots.map(rotateDot),
       (_, dots) => dots.map(moveDotInArc),
       wrapDots,
     ]);
@@ -28,6 +29,10 @@
       createDot({ x: 500, y: 100 }),
       createDot({ x: 200, y: 600 })
     ]);
+  };
+
+  function rotateDot(dot) {
+    return dot.update("angle", (angle) => angle + 0.05);
   };
 
   function wrapDots(input, dots, data) {
@@ -64,32 +69,35 @@
     return dot.update("center", (center) => {
       let angle = dot.get("angle");
       let rotating = {
-        x: Math.cos(angle),
-        y: Math.sin(angle)
+        x: Math.sin(angle),
+        y: Math.cos(angle)
       };
       let wideRotating = Maths.multiplyVectors(
         rotating,
-        dot.get("velocityWideRotator").toJS());
-      let translating = Maths.addVectors(wideRotating,
-                                         dot.get("velocityTranslator").toJS());
+        dot.get("velocityWideRotate").toJS());
+      let translating = Maths.addVectors(
+        wideRotating,
+        dot.get("velocityTranslate").toJS());
 
       return im.Map(Maths.addVectors(center.toJS(), translating));
     });
   };
 
   function createDot(center) {
-    let MAX_SPEED = 3;
+    const ROTATION = 3;
+    const MAX_TRANSLATION = 3;
+    let translator = randomRange(-MAX_TRANSLATION, MAX_TRANSLATION);
     return im.Map({
       center: im.Map(center),
       size: im.Map({ x: 5, y: 5 }),
       angle: 0,
-      velocityWideRotator: im.Map({
-        x: randomRange(-MAX_SPEED, MAX_SPEED),
-        y: randomRange(-MAX_SPEED, MAX_SPEED)
+      velocityWideRotate: im.Map({
+        x: ROTATION,
+        y: ROTATION
       }),
-      velocityTranslator: im.Map({
-        x: randomRange(-MAX_SPEED, MAX_SPEED),
-        y: randomRange(-MAX_SPEED, MAX_SPEED)
+      velocityTranslate: im.Map({
+        x: translator,
+        y: translator
       })
     });
   };

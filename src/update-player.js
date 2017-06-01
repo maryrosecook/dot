@@ -31,7 +31,7 @@
   };
 
   function updateVelocityIfBoosting(input, state) {
-    if (input.isDown(input.SPACE)) {
+    if (input.isDown(input.LEFT_MOUSE)) {
       const BOOST_SPEED = 0.2
       let velocityChange = Maths.vectorMultiply(
         Maths.angleToVector(state.getIn(["angle"])),
@@ -52,7 +52,7 @@
   };
 
   function turnIfNotBoosting(input, state) {
-    if (!input.isDown(input.SPACE)) {
+    if (!input.isDown(input.LEFT_MOUSE)) {
       const TURN_RATE = 5;
       return state.updateIn(["angle"],
                             (angle) => angle + TURN_RATE);

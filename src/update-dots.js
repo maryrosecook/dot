@@ -18,7 +18,9 @@
     return pipelineInputDataAndState(input, state, data, [
       (_, dots) => dots.map(rotateDot),
       (_, dots) => dots.map(moveDotInArc),
-      wrapDots,
+      (_, dots) => {
+        dots.map((dot) => wrapDot(dot, data))
+      }
     ]);
   };
 
@@ -35,34 +37,32 @@
     return dot.update("angle", (angle) => angle + 0.05);
   };
 
-  function wrapDots(input, dots, data) {
+  function wrapDot(dot, data) {
     let xScreen = data.getIn(["size", "x"]);
     let yScreen = data.getIn(["size", "y"]);
-    return dots.map((dot) => {
-      let radius = dot.getIn(["size", "x"]) / 2;
-      let left = dot.getIn(["center", "x"]) - radius;
-      let right = dot.getIn(["center", "x"]) + radius;
-      let bottom = dot.getIn(["center", "y"]) + radius;
-      let top = dot.getIn(["center", "y"]) - radius;
+    let radius = dot.getIn(["size", "x"]) / 2;
+    let left = dot.getIn(["center", "x"]) - radius;
+    let right = dot.getIn(["center", "x"]) + radius;
+    let bottom = dot.getIn(["center", "y"]) + radius;
+    let top = dot.getIn(["center", "y"]) - radius;
 
-      if (right < 0) {
-        return dot.setIn(["center", "x"], xScreen + radius);
-      }
+    if (right < 0) {
+      return dot.setIn(["center", "x"], xScreen + radius);
+    }
 
-      if (left > xScreen) {
-        return dot.setIn(["center", "x"], -radius);
-      }
+    if (left > xScreen) {
+      return dot.setIn(["center", "x"], -radius);
+    }
 
-      if (bottom < 0) {
-        return dot.setIn(["center", "y"], yScreen + radius);
-      }
+    if (bottom < 0) {
+      return dot.setIn(["center", "y"], yScreen + radius);
+    }
 
-      if (top > yScreen) {
-        return dot.setIn(["center", "y"], -radius);
-      }
+    if (top > yScreen) {
+      return dot.setIn(["center", "y"], -radius);
+    }
 
-      return dot;
-    });
+    return dot;
   };
 
   function moveDotInArc(dot) {

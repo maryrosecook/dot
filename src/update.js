@@ -4,7 +4,7 @@
   function update(input, state) {
     return state.update("player", (player) => {
       return updatePlayer(input, player);
-    }).update("dots", (dots) => {
+    }).update("dotGroup", (dots) => {
       return updateDots(input,
                         dots,
                         im.Map({ size: state.get("size") }));

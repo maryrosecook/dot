@@ -16,71 +16,37 @@
     };
 
     return pipelineInputDataAndState(input, state, data, [
-      (_, dots) => dots.map(rotateDot),
-      (_, dots) => dots.map(moveDotInArc),
-      (_, dots) => {
-        dots.map((dot) => wrapDot(dot, data))
-      }
+      updateIndividualDots,
+      spawnDots
     ]);
   };
 
   function initState() {
-    return im.List([
-      createDot({ x: 500, y: 500 }),
-      createDot({ x: 100, y: 100 }),
-      createDot({ x: 500, y: 100 }),
-      createDot({ x: 200, y: 600 })
-    ]);
-  };
+    return im.Map({
+      lastDotCreated: 0,
+      dots: im.List([
 
-  function rotateDot(dot) {
-    return dot.update("angle", (angle) => angle + 0.05);
-  };
-
-  function wrapDot(dot, data) {
-    let xScreen = data.getIn(["size", "x"]);
-    let yScreen = data.getIn(["size", "y"]);
-    let radius = dot.getIn(["size", "x"]) / 2;
-    let left = dot.getIn(["center", "x"]) - radius;
-    let right = dot.getIn(["center", "x"]) + radius;
-    let bottom = dot.getIn(["center", "y"]) + radius;
-    let top = dot.getIn(["center", "y"]) - radius;
-
-    if (right < 0) {
-      return dot.setIn(["center", "x"], xScreen + radius);
-    }
-
-    if (left > xScreen) {
-      return dot.setIn(["center", "x"], -radius);
-    }
-
-    if (bottom < 0) {
-      return dot.setIn(["center", "y"], yScreen + radius);
-    }
-
-    if (top > yScreen) {
-      return dot.setIn(["center", "y"], -radius);
-    }
-
-    return dot;
-  };
-
-  function moveDotInArc(dot) {
-    return dot.update("center", (center) => {
-      let angle = dot.get("angle");
-      let rotating = {
-        x: Math.sin(angle),
-        y: Math.cos(angle)
-      };
-      let wideRotating = Maths.multiplyVectors(
-        rotating,
-        dot.get("velocityWideRotate").toJS());
-      let translating = Maths.addVectors(
-        wideRotating,
-        dot.get("velocityTranslate").toJS());
-
-      return im.Map(Maths.addVectors(center.toJS(), translating));
+      ])
     });
+  };
+
+  function updateIndividualDots(input, state, data) {
+    return state.update("dots", (dots) => {
+      return dots.map((dot) => updateDot(input, dot, data));
+    });
+  };
+
+  function spawnDots(input, state, data) {
+    if (isTimeToCreateDot(state.get("lastDotCreated"))) {
+      return state.update("dots", (dots) => {
+        return dots.push(createDot({ x: 0, y: 0 }));
+      }).set("lastDotCreated", Date.now());
+    }
+  };
+
+  function isTimeToCreateDot(lastDotCreated) {
+    const TIME_BETWEEN_DOT_CREATIONS = 5000;
+    return lastDotCreated + TIME_BETWEEN_DOT_CREATIONS < Date.now();
   };
 
   function createDot(center) {

@@ -6,7 +6,7 @@
                      screen.canvas.height);
 
     drawPlayer(state.get("player"), screen);
-    drawDots(state.get("dots"), screen);
+    drawDots(state.getIn(["dotGroup", "dots"]), screen);
   };
 
   function flashScreen(screen) {

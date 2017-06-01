@@ -30,7 +30,8 @@
     drawLine(screen,
              player.getIn(["center"]).toJS(),
              end,
-             0.5);
+             0.5,
+             "#bbb");
   };
 
   function calculateHeadingEnd(playerCenter, playerAngle) {
@@ -59,13 +60,14 @@
     screen.fill();
   };
 
-  function drawLine(screen, from, to, lineWidth) {
+  function drawLine(screen, from, to, width, color) {
     screen.beginPath();
     screen.moveTo(from.x, from.y);
     screen.lineTo(to.x, to.y);
     screen.closePath();
 
-    screen.lineWidth = lineWidth;
+    screen.width = width;
+    screen.strokeStyle = color;
     screen.stroke();
   };
 

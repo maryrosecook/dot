@@ -143,6 +143,13 @@
       };
     },
 
+    multiplyVectors: function(vector1, vector2) {
+      return {
+        x: vector1.x * vector2.x,
+        y: vector1.y * vector2.y
+      };
+    },
+
     // returns dot product of two passed vectors
     dotProduct: function(vector1, vector2) {
       return vector1.x * vector2.x + vector1.y * vector2.y;

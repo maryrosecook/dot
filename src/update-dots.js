@@ -16,8 +16,8 @@
     };
 
     return pipelineInputDataAndState(input, state, data, [
-      (_, dots) => dots.map(moveWithVelocity),
-      wrapDots
+      (_, dots) => dots.map(moveDotInArc),
+      wrapDots,
     ]);
   };
 
@@ -60,9 +60,20 @@
     });
   };
 
-  function moveWithVelocity(dot) {
+  function moveDotInArc(dot) {
     return dot.update("center", (center) => {
-      return im.Map(Maths.addVectors(center.toJS(), dot.get("velocity").toJS()));
+      let angle = dot.get("angle");
+      let rotating = {
+        x: Math.cos(angle),
+        y: Math.sin(angle)
+      };
+      let wideRotating = Maths.multiplyVectors(
+        rotating,
+        dot.get("velocityWideRotator").toJS());
+      let translating = Maths.addVectors(wideRotating,
+                                         dot.get("velocityTranslator").toJS());
+
+      return im.Map(Maths.addVectors(center.toJS(), translating));
     });
   };
 
@@ -71,10 +82,15 @@
     return im.Map({
       center: im.Map(center),
       size: im.Map({ x: 5, y: 5 }),
-      velocity: im.Map({
+      angle: 0,
+      velocityWideRotator: im.Map({
         x: randomRange(-MAX_SPEED, MAX_SPEED),
         y: randomRange(-MAX_SPEED, MAX_SPEED)
       }),
+      velocityTranslator: im.Map({
+        x: randomRange(-MAX_SPEED, MAX_SPEED),
+        y: randomRange(-MAX_SPEED, MAX_SPEED)
+      })
     });
   };
 

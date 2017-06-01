@@ -14,8 +14,8 @@
   };
 
   function drawPlayer(player, screen) {
-    drawBody(player, screen);
     drawHeading(player, screen);
+    drawBody(player, screen);
   };
 
   function drawBody(player, screen) {
@@ -31,7 +31,7 @@
              player.getIn(["center"]).toJS(),
              end,
              0.5,
-             "#bbb");
+             "#f00");
   };
 
   function calculateHeadingEnd(playerCenter, playerAngle) {
@@ -66,7 +66,7 @@
     screen.lineTo(to.x, to.y);
     screen.closePath();
 
-    screen.width = width;
+    screen.lineWidth = width;
     screen.strokeStyle = color;
     screen.stroke();
   };

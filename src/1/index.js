@@ -1,6 +1,10 @@
 ;(function(exports) {
   var im = Immutable;
 
+  window.addEventListener("load", function() {
+    start(window);
+  });
+
   function start(window) {
     var screen = draw.setupScreen(window);
     var input = new Input(window);
@@ -19,9 +23,5 @@
     return im.Map({
       size: im.Map({ x: screen.canvas.width, y: screen.canvas.height })
     });
-  };
-
-  exports.app = {
-    start: start
   };
 })(this);

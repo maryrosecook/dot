@@ -144,6 +144,14 @@
     window.addEventListener('mouseup', function(e) {
       self._up(self._getMouseButton(e));
     }, false);
+
+    window.addEventListener('touchstart', function(e) {
+      self._down(self._getMouseButton(e));
+    }, false);
+
+    window.addEventListener('touchend', function(e) {
+      self._up(self._getMouseButton(e));
+    }, false);
   };
 
   KeyboardListener.prototype = {
@@ -199,7 +207,7 @@
       if (e.which !== undefined || e.button !== undefined) {
         if (e.which === 3 || e.button === 2) {
           return Input.prototype.RIGHT_MOUSE;
-        } else if (e.which === 1 || e.button === 0 || e.button === 1) {
+        } else if (e.which === 0 || e.which === 1 || e.button === 0 || e.button === 1) {
           return Input.prototype.LEFT_MOUSE;
         }
       }

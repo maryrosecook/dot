@@ -6,7 +6,6 @@
                      screen.canvas.height);
 
     drawPlayer(state.get("player"), screen);
-    drawDots(state.getIn(["dotGroup", "dots"]), screen);
   };
 
   function flashScreen(screen) {
@@ -40,16 +39,6 @@
                                          LINE_LENGTH);
     return Maths.addVectors(playerCenter,
                             endOffset);
-  };
-
-  function drawDots(dots, screen) {
-    dots.forEach((dot) => drawDot(dot, screen));
-  };
-
-  function drawDot(dot, screen) {
-    drawCircle(screen,
-               dot.getIn(["center"]).toJS(),
-               dot.getIn(["size", "x"]));
   };
 
   function drawCircle(screen, center, radius) {

@@ -6,9 +6,11 @@
   });
 
   function start(window) {
-    var screen = draw.setupScreen(window);
+    let state = setupState();
+    let screen = getScreen(window);
+    draw.setupScreen(screen, state.get("size"), draw.windowSize(window));
     var input = new Input(window);
-    let state = setupState(screen);
+
 
     (function loopForever() {
       state = update(input, state);
@@ -19,10 +21,17 @@
     })();
   };
 
-  function setupState(screen) {
+  function setupState() {
     return im.Map({
-      size: im.Map({ x: screen.canvas.width, y: screen.canvas.height }),
+      size: im.Map({ x: 750, y: 1108 }),
       messages: im.List()
     });
+  };
+
+  function getScreen(window) {
+    return window
+      .document
+      .getElementById("screen")
+      .getContext("2d");
   };
 })(this);

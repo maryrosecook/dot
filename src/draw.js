@@ -1,9 +1,12 @@
 ;(function(exports) {
+  const im = Immutable;
+
   function draw(state, screen) {
-    screen.clearRect(0,
-                     0,
-                     screen.canvas.width,
-                     screen.canvas.height);
+    screen.fillStyle = "white";
+    screen.fillRect(0,
+                    0,
+                    screen.canvas.width,
+                    screen.canvas.height);
 
     drawPlayer(state.get("player"), screen);
     drawBullets(state.get("bullets"), screen);
@@ -98,18 +101,26 @@
     screen.stroke();
   };
 
-  function setupScreen(window) {
-    var screen = window
-        .document
-        .getElementById("screen")
-        .getContext("2d");
-    screen.canvas.width = window.innerWidth;
-    screen.canvas.height = window.innerHeight;
-    return screen;
+  function setupScreen(screen, viewSize, windowSize) {
+    const scale = getScale(viewSize, windowSize);
+    console.log(scale)
+    screen.canvas.width = viewSize.get("x") * scale;
+    screen.canvas.height = viewSize.get("y") * scale;
+  };
+
+  function windowSize(window) {
+    return im.Map({ x: window.innerWidth, y: window.innerHeight });
+  };
+
+  function getScale(viewSize, windowSize) {
+    const horizontalRatio = windowSize.get("x") / viewSize.get("x");
+    const verticalRatio = windowSize.get("y") / viewSize.get("y");
+    return Math.min(horizontalRatio, verticalRatio);
   };
 
   exports.draw = {
     draw,
-    setupScreen
+    setupScreen,
+    windowSize
   };
 })(this);

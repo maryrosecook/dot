@@ -21,7 +21,8 @@
 
   function setupState(screen) {
     return im.Map({
-      size: im.Map({ x: screen.canvas.width, y: screen.canvas.height })
+      size: im.Map({ x: screen.canvas.width, y: screen.canvas.height }),
+      messages: im.List()
     });
   };
 })(this);

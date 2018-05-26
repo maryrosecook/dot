@@ -261,6 +261,8 @@
         return { x: e.pageX, y: e.pageY };
 	    } else if (e.clientX) {
         return { x: e.clientX, y: e.clientY };
+      } else {
+        return { x: undefined, y: undefined };
       }
     }
   };

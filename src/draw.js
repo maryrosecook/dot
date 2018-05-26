@@ -6,6 +6,8 @@
                      screen.canvas.height);
 
     drawPlayer(state.get("player"), screen);
+    drawBullets(state.get("bullets"), screen);
+    drawEnemies(state.get("enemies"), screen);
   };
 
   function flashScreen(screen) {
@@ -13,39 +15,75 @@
   };
 
   function drawPlayer(player, screen) {
-    drawHeading(player, screen);
     drawBody(player, screen);
   };
 
-  function drawBody(player, screen) {
+  function drawEnemies(enemies, screen) {
+    enemies.forEach((enemy) => drawEnemy(enemy, screen));
+  };
+
+  function drawEnemy(enemy, screen) {
+    screen.fillStyle = "#000";
     drawCircle(screen,
-               player.getIn(["center"]).toJS(),
-               player.getIn(["size", "x"]));
+               enemy.getIn(["center"]).toJS(),
+               enemy.getIn(["size", "x"]));
   };
 
-  function drawHeading(player, screen) {
-    let end = calculateHeadingEnd(player.getIn(["center"]).toJS(),
-                                  player.getIn(["angle"]));
-    drawLine(screen,
-             player.getIn(["center"]).toJS(),
-             end,
-             0.5,
-             "#f00");
+  function drawBullets(bullets, screen) {
+    bullets.forEach((bullet) => drawBullet(bullet, screen));
   };
 
-  function calculateHeadingEnd(playerCenter, playerAngle) {
-    const LINE_LENGTH = 50;
-    let endOffset = Maths.vectorMultiply(Maths.angleToVector(playerAngle),
-                                         LINE_LENGTH);
-    return Maths.addVectors(playerCenter,
-                            endOffset);
+  function drawBullet(bullet, screen) {
+    screen.fillStyle = "#000";
+    drawCircle(screen,
+               bullet.getIn(["center"]).toJS(),
+               bullet.getIn(["size", "x"]));
   };
+
+  function drawBody(player, screen) {
+    const playerSize = player.get("size").toJS();
+    const playerCenter = player.get("center").toJS();
+
+    screen.fillStyle = "#000";
+    drawCircle(screen,
+               playerCenter,
+               playerSize.x);
+
+
+    const eyeCenter = Maths.addVectors(
+      playerCenter,
+      Maths.multiplyVectors(
+        Maths.angleToVector(player.get("angle")),
+        playerSize,
+        { x: 1, y: 20 }));
+
+    drawCircle(screen,
+               eyeCenter,
+               player.getIn(["size", "x"]) / 1.5);
+  };
+
+  // function drawHeading(player, screen) {
+  //   let end = calculateHeadingEnd(player.getIn(["center"]).toJS(),
+  //                                 player.getIn(["angle"]));
+  //   drawLine(screen,
+  //            player.getIn(["center"]).toJS(),
+  //            end,
+  //            0.5,
+  //            "#f00");
+  // };
+
+  // function calculateHeadingEnd(playerCenter, playerAngle) {
+  //   const LINE_LENGTH = 50;
+  //   let endOffset = Maths.vectorMultiply(Maths.angleToVector(playerAngle),
+  //                                        LINE_LENGTH);
+  //   return Maths.addVectors(playerCenter,
+  //                           endOffset);
+  // };
 
   function drawCircle(screen, center, radius) {
     screen.beginPath();
     screen.arc(center.x, center.y, radius, 0, Math.PI * 2, true);
     screen.closePath();
-    screen.fillStyle = "black";
     screen.fill();
   };
 

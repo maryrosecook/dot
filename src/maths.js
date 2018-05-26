@@ -136,11 +136,12 @@
       };
     },
 
-    addVectors: function(vector1, vector2) {
-      return {
-        x: vector1.x + vector2.x,
-        y: vector1.y + vector2.y
-      };
+    addVectors: function(...vectors) {
+      return vectors.reduce((sumVector, v) => {
+        sumVector.x += v.x;
+        sumVector.y += v.y;
+        return sumVector;
+      }, { x: 0, y: 0 });
     },
 
     multiplyVectors: function(vector1, vector2) {

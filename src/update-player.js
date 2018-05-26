@@ -1,32 +1,26 @@
 ;(function(exports) {
   var im = Immutable;
 
-  function updatePlayer(input, state) {
-    function pipelineInputDataAndState(input, state, fns) {
-      if (state === undefined) {
-        return initState();
-      } else if (fns.length === 0) {
-        return state;
-      } else {
-        return pipelineInputDataAndState(input,
-                                         fns[0](input, state) || state,
-                                         fns.slice(1));
-      }
-    };
+  function updatePlayer(input, state, messages) {
+    if (!state) {
+      return initState();
+    }
 
-    return pipelineInputDataAndState(input, state, [
+    return update.pipelineInputDataAndState(input, state, messages, [
       moveWithVelocity,
       turnIfNotBoosting,
-      updateVelocityIfBoosting
+      updateVelocityIfBoosting,
+      shootIfTapping
     ]);
   };
 
   function initState() {
     return im.Map({
       center: im.Map({ x: 300, y: 300 }),
-      size: im.Map({ x: 5, y: 5 }),
+      size: im.Map({ x: 10, y: 10 }),
       velocity: im.Map({ x: 0, y: 0 }),
-      angle: 0
+      angle: 0,
+      messages: im.List()
     });
   };
 
@@ -56,6 +50,38 @@
       const TURN_RATE = 5;
       return state.updateIn(["angle"],
                             (angle) => angle + TURN_RATE);
+    }
+  };
+
+  function shootIfTapping(input, state) {
+    if (input.isPressed(input.LEFT_MOUSE)) {
+      const playerCenter = state.get("center").toJS();
+      const playerVelocity = state.get("velocity").toJS();
+      const angle = state.get("angle");
+      const playerSize = state.get("size").toJS();
+
+      const bulletCenter = im.Map(
+        Maths.addVectors(
+          playerCenter,
+          Maths.multiplyVectors(
+            playerSize,
+            Maths.angleToVector(angle))));
+
+      const bulletVelocity = im.Map(
+        Maths.multiplyVectors(
+          Maths.angleToVector(angle),
+          { x: 7, y: 7 }));
+
+      return state.updateIn(
+        ["messages"], messages => {
+          return messages.push(
+            message(
+              "new bullet",
+              im.Map({
+                center: bulletCenter,
+                velocity: bulletVelocity
+              })));
+        });
     }
   };
 

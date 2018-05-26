@@ -38,7 +38,7 @@
     const newBullets = messages
           .filter(message => message.get("type") === "new bullet")
           .map(message => message.get("data").set(
-            "size", im.Map({ x: 2, y: 2 })));
+            "size", im.Map({ x: 4, y: 4 })));
 
     return state.concat(newBullets);
   };

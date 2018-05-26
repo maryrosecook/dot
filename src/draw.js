@@ -1,57 +1,56 @@
 ;(function(exports) {
   const im = Immutable;
 
-  function draw(state, screen) {
+  function draw(state, screen, windowSize) {
     screen.fillStyle = "white";
     screen.fillRect(0,
                     0,
                     screen.canvas.width,
                     screen.canvas.height);
 
-    drawPlayer(state.get("player"), screen);
-    drawBullets(state.get("bullets"), screen);
-    drawEnemies(state.get("enemies"), screen);
+    const scale = getScale(state.get("viewSize"), windowSize);
+    drawPlayer(state.get("player"), screen, scale);
+    drawBullets(state.get("bullets"), screen, scale);
+    drawEnemies(state.get("enemies"), screen, scale);
   };
 
-  function flashScreen(screen) {
-    screen.fillRect(0, 0, screen.canvas.width, screen.canvas.height)
+  function drawPlayer(player, screen, scale) {
+    drawBody(player, screen, scale);
   };
 
-  function drawPlayer(player, screen) {
-    drawBody(player, screen);
+  function drawEnemies(enemies, screen, scale) {
+    enemies.forEach((enemy) => drawEnemy(enemy, screen, scale));
   };
 
-  function drawEnemies(enemies, screen) {
-    enemies.forEach((enemy) => drawEnemy(enemy, screen));
-  };
-
-  function drawEnemy(enemy, screen) {
+  function drawEnemy(enemy, screen, scale) {
     screen.fillStyle = "#000";
     drawCircle(screen,
                enemy.getIn(["center"]).toJS(),
-               enemy.getIn(["size", "x"]));
+               enemy.getIn(["size", "x"]),
+               scale);
   };
 
-  function drawBullets(bullets, screen) {
-    bullets.forEach((bullet) => drawBullet(bullet, screen));
+  function drawBullets(bullets, screen, scale) {
+    bullets.forEach((bullet) => drawBullet(bullet, screen, scale));
   };
 
-  function drawBullet(bullet, screen) {
+  function drawBullet(bullet, screen, scale) {
     screen.fillStyle = "#000";
     drawCircle(screen,
                bullet.getIn(["center"]).toJS(),
-               bullet.getIn(["size", "x"]));
+               bullet.getIn(["size", "x"]),
+               scale);
   };
 
-  function drawBody(player, screen) {
+  function drawBody(player, screen, scale) {
     const playerSize = player.get("size").toJS();
     const playerCenter = player.get("center").toJS();
 
     screen.fillStyle = "#000";
     drawCircle(screen,
                playerCenter,
-               playerSize.x);
-
+               playerSize.x,
+               scale);
 
     const eyeCenter = Maths.addVectors(
       playerCenter,
@@ -62,30 +61,18 @@
 
     drawCircle(screen,
                eyeCenter,
-               player.getIn(["size", "x"]) / 1.5);
+               player.getIn(["size", "x"]) / 1.5,
+               scale);
   };
 
-  // function drawHeading(player, screen) {
-  //   let end = calculateHeadingEnd(player.getIn(["center"]).toJS(),
-  //                                 player.getIn(["angle"]));
-  //   drawLine(screen,
-  //            player.getIn(["center"]).toJS(),
-  //            end,
-  //            0.5,
-  //            "#f00");
-  // };
-
-  // function calculateHeadingEnd(playerCenter, playerAngle) {
-  //   const LINE_LENGTH = 50;
-  //   let endOffset = Maths.vectorMultiply(Maths.angleToVector(playerAngle),
-  //                                        LINE_LENGTH);
-  //   return Maths.addVectors(playerCenter,
-  //                           endOffset);
-  // };
-
-  function drawCircle(screen, center, radius) {
+  function drawCircle(screen, center, radius, scale) {
     screen.beginPath();
-    screen.arc(center.x, center.y, radius, 0, Math.PI * 2, true);
+    screen.arc(center.x * scale,
+               center.y * scale,
+               radius * scale,
+               0,
+               Math.PI * 2,
+               true);
     screen.closePath();
     screen.fill();
   };
@@ -103,7 +90,6 @@
 
   function setupScreen(screen, viewSize, windowSize) {
     const scale = getScale(viewSize, windowSize);
-    console.log(scale)
     screen.canvas.width = viewSize.get("x") * scale;
     screen.canvas.height = viewSize.get("y") * scale;
   };

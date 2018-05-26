@@ -25,7 +25,7 @@
   function createEnemy(center) {
     return im.Map({
       center: im.Map(center),
-      size: im.Map({ x: 10, y: 10 })
+      size: im.Map({ x: 20, y: 20 })
     });
   };
 

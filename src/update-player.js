@@ -17,7 +17,7 @@
   function initState() {
     return im.Map({
       center: im.Map({ x: 300, y: 300 }),
-      size: im.Map({ x: 10, y: 10 }),
+      size: im.Map({ x: 20, y: 20 }),
       velocity: im.Map({ x: 0, y: 0 }),
       angle: 0,
       messages: im.List()

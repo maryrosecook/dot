@@ -8,13 +8,13 @@
   function start(window) {
     let state = setupState();
     let screen = getScreen(window);
-    draw.setupScreen(screen, state.get("size"), draw.windowSize(window));
+    draw.setupScreen(screen, state.get("viewSize"), draw.windowSize(window));
     var input = new Input(window);
 
 
     (function loopForever() {
       state = update(input, state);
-      draw.draw(state, screen);
+      draw.draw(state, screen, draw.windowSize(window));
       input.update();
 
       requestAnimationFrame(loopForever);
@@ -23,7 +23,7 @@
 
   function setupState() {
     return im.Map({
-      size: im.Map({ x: 750, y: 1108 }),
+      viewSize: im.Map({ x: 750, y: 1108 }),
       messages: im.List()
     });
   };

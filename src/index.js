@@ -6,9 +6,9 @@
   });
 
   function start(window) {
-    let state = setupState();
+    let state = update.initState();
     let screen = getScreen(window);
-    draw.setupScreen(screen, state.get("viewSize"), draw.windowSize(window));
+    draw.setupScreen(screen, state.get("size"), draw.windowSize(window));
     var input = new Input(window);
 
 
@@ -19,13 +19,6 @@
 
       requestAnimationFrame(loopForever);
     })();
-  };
-
-  function setupState() {
-    return im.Map({
-      viewSize: im.Map({ x: 750, y: 1108 }),
-      messages: im.List()
-    });
   };
 
   function getScreen(window) {

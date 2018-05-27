@@ -8,7 +8,7 @@
                     screen.canvas.width,
                     screen.canvas.height);
 
-    const scale = getScale(state.get("viewSize"), windowSize);
+    const scale = getScale(state.get("size"), windowSize);
     drawPlayer(state.get("player"), screen, scale);
     drawBullets(state.get("bullets"), screen, scale);
     drawEnemies(state.get("enemies"), screen, scale);

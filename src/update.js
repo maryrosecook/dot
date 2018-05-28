@@ -7,11 +7,13 @@
     return state
       .set("messages", im.List())
       .update("player", player => {
-        return wrapIfOffScreen(updatePlayer(input, player, messages), state);
+        return updatePlayer(input, player, messages)
+          .update(player => wrapIfOffScreen(player, state));
       }).update("bullets", bullets => {
         return updateBullets(input, bullets, messages);
       }).update("enemies", enemies => {
-        return updateEnemies(input, enemies, messages);
+        return updateEnemies(input, enemies, messages, state.get("size"))
+          .map(body => wrapIfOffScreen(body, state));
       }).update(state => {
         return harvestMessages(state, "player");
       }).update(state => {

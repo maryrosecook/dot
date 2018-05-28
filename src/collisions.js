@@ -12,10 +12,16 @@
       });
   };
 
-  function isHit(body, messages) {
+  function isHit(body, otherTypes, messages) {
     return messages
       .filter(message.isType("collision"))
-      .find(message => message.get("data").includes(body));
+      .find(message => {
+        const body1 = message.getIn(["data", 0]);
+        const body2 = message.getIn(["data", 1]);
+
+        return (body === body1 && otherTypes.includes(body2.get("type"))) ||
+          (body === body2 && otherTypes.includes(body1.get("type")));
+      });
   };
 
   function isPairColliding(body1, body2) {

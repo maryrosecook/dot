@@ -1,6 +1,6 @@
-;(function(exports) {
-  var im = Immutable;
+var im = Immutable;
 
+;(function(exports) {
   window.addEventListener("load", function() {
     start(window);
   });

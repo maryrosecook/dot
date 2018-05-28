@@ -1,6 +1,4 @@
 ;(function(exports) {
-  var im = Immutable;
-
   function updatePlayer(input, state, messages) {
     if (!state) {
       return initState();
@@ -16,6 +14,7 @@
 
   function initState() {
     return im.Map({
+      type: "player",
       center: im.Map({ x: 300, y: 300 }),
       size: im.Map({ x: 20, y: 20 }),
       velocity: im.Map({ x: 0, y: 0 }),
@@ -37,12 +36,6 @@
                                                         velocityChange)));
 
     }
-  };
-
-  function moveWithVelocity(input, state) {
-    return state.update("center", (center) => {
-      return im.Map(Maths.addVectors(center.toJS(), state.get("velocity").toJS()));
-    });
   };
 
   function turnIfNotBoosting(input, state) {

@@ -56,7 +56,7 @@
     },
 
     spread: function(num) {
-      return (num / 2) + num * Math.random();
+      return (num / 2) - num * Math.random();
     },
 
     jitter: function(value, proportion) {

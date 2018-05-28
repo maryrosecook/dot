@@ -9,7 +9,7 @@
     return update.pipelineInputDataAndState(input, state, messages, [
       keepNotHit,
       spawn,
-      moveWithVelocity
+      (input, state) => state.map(body => moveWithVelocity(input, body))
     ]);
   };
 
@@ -19,26 +19,15 @@
 
   function keepNotHit(input, state, messages) {
     return state
-      .filter(enemy => !collisions.isHit(enemy, messages));
-  };
-
-  function moveWithVelocity(input, state) {
-    return state.map(bullet => {
-      const velocity = bullet.get("velocity").toJS();
-      return bullet.update("center", (center) => {
-        return im.Map(
-          Maths.addVectors(
-            center.toJS(),
-            velocity));
-      });
-    });
+      .filter(enemy => !collisions.isHit(enemy, im.List(["enemy"]), messages));
   };
 
   function spawn(input, state, messages) {
     const newBullets = messages
           .filter(message => message.get("type") === "new bullet")
-          .map(message => message.get("data").set(
-            "size", im.Map({ x: 4, y: 4 })));
+          .map(message => message.get("data")
+               .set("size", im.Map({ x: 4, y: 4 }))
+               .set("type", "bullet"));
 
     return state.concat(newBullets);
   };

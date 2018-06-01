@@ -1,7 +1,11 @@
 ;(function(exports) {
   function update(input, state) {
-    const messages = state.get("messages");
+    let nextMessages = im.List();
+    function sendMessage(message) {
+      nextMessages = nextMessages.push(message);
+    };
 
+    const messages = state.get("messages");
     return state
       .set("messages", im.List())
       .update(state => updateGame(input, state, messages))
@@ -10,15 +14,17 @@
                             player,
                             messages,
                             state.get("center"),
-                            state.get("size"));
+                            state.get("size"),
+                            sendMessage);
       }).update("tokens", tokens => {
         return updateTokens(input,
                             tokens,
                             messages,
                             state.get("size"),
-                            state.get("remainingTokens"))
+                            state.get("remainingTokens"),
+                            sendMessage)
       })
-      .update(harvestMessages)
+      .update((state) => harvestMessages(state, nextMessages, sendMessage))
   };
 
   function bodies(state) {
@@ -27,14 +33,11 @@
       .concat(state.getIn(["tokens", "tokens"]));
   };
 
-  function harvestMessages(state) {
-    const messages = state.getIn(["player", "messages"])
-          .concat(state.getIn(["tokens", "messages"]))
-          .concat(collisions(bodies(state)));
+  function harvestMessages(state, nextMessages) {
+    const messages = collisions(bodies(state))
+          .concat(nextMessages);
 
-    return state.set("messages", messages)
-      .setIn(["player", "messages"], im.List())
-      .setIn(["tokens", "messages"], im.List());
+    return state.set("messages", messages);
   };
 
   function pipelineInputDataAndState(input, state, messages, fns) {

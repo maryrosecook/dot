@@ -1,7 +1,12 @@
 ;(function(exports) {
   const SIZE = im.Map({ x: 40, y: 40 });
 
-  function updateTokens(input, state, messages, viewSize, remainingTokens) {
+  function updateTokens(input,
+                        state,
+                        messages,
+                        viewSize,
+                        remainingTokens,
+                        sendMessage) {
     if (!state) {
       return initState(viewSize);
     }
@@ -11,14 +16,13 @@
       (_, state) => state
         .update("tokens", tokens =>
                 tokens.map(body => moveWithVelocity(_, body))),
-      (_, state) => spawnIfNoTokens(state, viewSize, remainingTokens)
+      (_, state) => spawnIfNoTokens(state, viewSize, remainingTokens, sendMessage)
     ]);
   };
 
   function initState(viewSize) {
     return im.Map({
-      tokens: im.List(),
-      messages: im.List()
+      tokens: im.List()
     });
   };
 
@@ -36,18 +40,17 @@
     });
   };
 
-  function spawnIfNoTokens(state, viewSize, remainingTokens) {
+  function spawnIfNoTokens(state, viewSize, remainingTokens, sendMessage) {
     if (state.get("tokens").count() > 0) {
       return;
     }
+
+    sendMessage(message("token gone"));
 
     return state
       .update(
         "tokens", tokens => tokens.push(
           createToken(randomSpawnPosition(viewSize, SIZE), remainingTokens)))
-      .update(
-        "messages",
-        messages => messages.push(message("token gone")));
   };
 
   function createToken(center, id) {

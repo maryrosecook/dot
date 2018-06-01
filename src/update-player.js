@@ -1,5 +1,9 @@
 ;(function(exports) {
-  function updatePlayer(input, state, messages, viewCenter, viewSize) {
+  function updatePlayer(input,
+                        state,
+                        messages,
+                        viewCenter,
+                        viewSize) {
     if (!state) {
       return initState(viewSize);
     }
@@ -21,8 +25,7 @@
       }),
       size: im.Map({ x: 40, y: 40 }),
       velocity: im.Map({ x: 0, y: 0 }),
-      angle: 0,
-      messages: im.List()
+      angle: 0
     });
   };
 

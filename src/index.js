@@ -6,7 +6,7 @@ var im = Immutable;
   });
 
   function start(window) {
-    let state = update.initState();
+    let state = updateGame.initState();
     let screen = getScreen(window);
     draw.setupScreen(screen, state.get("size"), draw.windowSize(window));
     var input = new Input(window);

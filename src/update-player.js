@@ -1,5 +1,5 @@
 ;(function(exports) {
-  function updatePlayer(input, state, messages, viewSize) {
+  function updatePlayer(input, state, messages, viewCenter, viewSize) {
     if (!state) {
       return initState(viewSize);
     }
@@ -7,7 +7,9 @@
     return update.pipelineInputDataAndState(input, state, messages, [
       moveWithVelocity,
       turnIfNotBoosting,
-      updateVelocityIfBoosting
+      updateVelocityIfBoosting,
+      (_, player) => wrapIfOffScreen(player, viewCenter, viewSize)
+
     ]);
   };
 

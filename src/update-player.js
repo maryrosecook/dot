@@ -9,7 +9,6 @@
       turnIfNotBoosting,
       updateVelocityIfBoosting,
       (_, player) => wrapIfOffScreen(player, viewCenter, viewSize)
-
     ]);
   };
 

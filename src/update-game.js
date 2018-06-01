@@ -39,7 +39,7 @@
       center: im.Map({ x: size.get("x") / 2, y: size.get("y") / 2 }),
       startTime: Date.now(),
       bestTime: undefined,
-      remainingTokens: 1,
+      remainingTokens: 9,
       messages: im.List()
     });
   };

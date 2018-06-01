@@ -1,22 +1,24 @@
 ;(function(exports) {
-  var im = Immutable;
-
   function update(input, state) {
     const messages = state.get("messages");
 
     return state
       .set("messages", im.List())
+      .update(state => updateGame(state, messages))
       .update("player", player => {
-        return updatePlayer(input, player, messages)
+        return updatePlayer(input, player, messages, state.get("size"))
           .update(player => wrapIfOffScreen(player, state));
-      }).update("bullets", bullets => {
-        return updateBullets(input, bullets, messages);
-      }).update("enemies", enemies => {
-        return updateEnemies(input, enemies, messages, state.get("size"))
-          .map(body => wrapIfOffScreen(body, state));
-      }).update(state => {
-        return harvestMessages(state, "player");
-      }).update(state => {
+      }).update("tokens", tokens => {
+        return updateTokens(input,
+                            tokens,
+                            messages,
+                            state.get("size"),
+                            state.get("remainingTokens"))
+          .update("tokens", tokens =>
+                  tokens.map(body => wrapIfOffScreen(body, state)));
+      })
+      .update(harvestMessages)
+      .update(state => {
         return state.update("messages", messages => {
           return messages.concat(collisions(bodies(state)));
         });
@@ -26,8 +28,39 @@
   function bodies(state) {
     return im.List()
       .concat([state.get("player")])
-      .concat(state.get("bullets"))
-      .concat(state.get("enemies"));
+      .concat(state.getIn(["tokens", "tokens"]));
+  };
+
+  function updateGame(state, messages) {
+    return state
+      .update(state => updateRemainingTokens(state, messages))
+      .update(monitorGameOver);
+  };
+
+  function updateRemainingTokens(state, messages) {
+    const eatenTokens = messages
+          .filter(message.isType("token gone"))
+          .count();
+    return state.update(
+      "remainingTokens", remainingTokens => remainingTokens - eatenTokens);
+  };
+
+  function monitorGameOver(state) {
+    if (state.get("remainingTokens") >= 0) {
+      return state;
+    }
+
+    const thisGameTime = Date.now() - state.get("startTime");
+    let bestTime = state.get("bestTime");
+
+    if (bestTime === undefined ||
+        thisGameTime < bestTime) {
+      bestTime = thisGameTime;
+      console.log(bestTime)
+    }
+
+    return initState()
+      .set("bestTime", bestTime);
   };
 
   function wrapIfOffScreen(body, state) {
@@ -67,6 +100,15 @@
     });
   };
 
+  function harvestMessages(state) {
+    const messages = state.getIn(["player", "messages"])
+          .concat(state.getIn(["tokens", "messages"]));
+
+    return state.set("messages", messages)
+      .setIn(["player", "messages"], im.List())
+      .setIn(["tokens", "messages"], im.List());
+  };
+
   function pipelineInputDataAndState(input, state, messages, fns) {
     if (fns.length === 0) {
       return state;
@@ -79,19 +121,15 @@
     }
   };
 
-  function harvestMessages(state, part) {
-    return state.update("messages", messages => {
-      return messages
-        .concat(state.getIn([part, "messages"]));
-    }).setIn([part, "messages"], im.List());
-  };
-
   function initState() {
     const size = im.Map({ x: 750, y: 1108 });
 
     return im.Map({
       size,
       center: im.Map({ x: size.get("x") / 2, y: size.get("y") / 2 }),
+      startTime: Date.now(),
+      bestTime: undefined,
+      remainingTokens: 1,
       messages: im.List()
     });
   };

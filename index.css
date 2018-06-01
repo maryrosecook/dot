@@ -3,10 +3,10 @@ body.noscroll {
   padding: 0;
   position: fixed;
   overflow-y: scroll;
-  background-color: black;
 }
 
 canvas {
+  border: 1px solid black;
   position: fixed;
   left: 0;
   right: 0;

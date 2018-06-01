@@ -1,6 +1,4 @@
 ;(function(exports) {
-  const im = Immutable;
-
   function draw(state, screen, windowSize) {
     screen.fillStyle = "white";
     screen.fillRect(0,
@@ -9,37 +7,49 @@
                     screen.canvas.height);
 
     const scale = getScale(state.get("size"), windowSize);
+    drawGame(state, screen, scale, windowSize);
     drawPlayer(state.get("player"), screen, scale);
-    drawBullets(state.get("bullets"), screen, scale);
-    drawEnemies(state.get("enemies"), screen, scale);
+    drawTokens(state.getIn(["tokens", "tokens"]), screen, scale);
   };
 
   function drawPlayer(player, screen, scale) {
     drawBody(player, screen, scale);
   };
 
-  function drawEnemies(enemies, screen, scale) {
-    enemies.forEach((enemy) => drawEnemy(enemy, screen, scale));
+  function drawTokens(tokens, screen, scale) {
+    tokens.forEach((token) => drawToken(token, screen, scale));
   };
 
-  function drawEnemy(enemy, screen, scale) {
-    screen.fillStyle = "#000";
+  function drawToken(token, screen, scale) {
+    const center = token.get("center").toJS();
+    const id = token.get("id");
+
+    screen.fillStyle = "#fc0";
     drawCircle(screen,
-               enemy.getIn(["center"]).toJS(),
-               enemy.getIn(["size", "x"]),
+               token.getIn(["center"]).toJS(),
+               token.getIn(["size", "x"]) / 2,
                scale);
-  };
-
-  function drawBullets(bullets, screen, scale) {
-    bullets.forEach((bullet) => drawBullet(bullet, screen, scale));
-  };
-
-  function drawBullet(bullet, screen, scale) {
+    screen.font = "16px courier";
     screen.fillStyle = "#000";
-    drawCircle(screen,
-               bullet.getIn(["center"]).toJS(),
-               bullet.getIn(["size", "x"]),
-               scale);
+    screen.textAlign = "center";
+    screen.fillText(id, center.x * scale, (center.y * scale) + 10 * scale);
+  };
+
+  function millisecondsToSeconds(milliseconds) {
+    return Math.floor(milliseconds / 1000);
+  };
+
+  function drawGame(game, screen, scale, windowSize) {
+    const thisTime = millisecondsToSeconds(Date.now() - game.get("startTime"));
+    const bestTime = game.get("bestTime") === undefined ?
+          "-" :
+          millisecondsToSeconds(game.get("bestTime"));
+
+    screen.font = "16px courier";
+    screen.textAlign = "left";
+    screen.fillStyle = "#000";
+    screen.fillText(`THIS: ${thisTime}`, 10, 25);
+    screen.fillText(`HIGH: ${bestTime}`, 10, 50);
   };
 
   function drawBody(player, screen, scale) {
@@ -49,19 +59,19 @@
     screen.fillStyle = "#000";
     drawCircle(screen,
                playerCenter,
-               playerSize.x,
+               playerSize.x / 2,
                scale);
 
     const eyeCenter = Maths.addVectors(
       playerCenter,
       Maths.multiplyVectors(
         Maths.angleToVector(player.get("angle")),
-        playerSize,
-        { x: 1, y: 20 }));
+        Maths.multiplyVectors(playerSize, { x: 0.3, y: 0.3 })));
 
+    screen.fillStyle = "white";
     drawCircle(screen,
                eyeCenter,
-               player.getIn(["size", "x"]) / 1.5,
+               player.getIn(["size", "x"]) / 6,
                scale);
   };
 

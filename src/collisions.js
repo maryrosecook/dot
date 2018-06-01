@@ -1,6 +1,4 @@
 ;(function(exports) {
-  var im = Immutable;
-
   function collisions(bodies) {
     return bodyPairs(bodies)
       .filter(bodyPair => isPairColliding(bodyPair.get(0), bodyPair.get(1)))
@@ -27,11 +25,12 @@
   function isPairColliding(body1, body2) {
     return Maths.distance(
       body1.get("center").toJS(), body2.get("center").toJS()) <
-      body1.getIn(["size", "x"]) + body2.getIn(["size", "x"]);
+      body1.getIn(["size", "x"]) / 2 + body2.getIn(["size", "x"]) / 2;
   };
 
   function bodyPairs(bodies) {
     let pairs = [];
+
     for (let i = 0; i < bodies.count(); i++) {
       for (let j = i + 1; j < bodies.count(); j++) {
         const body1 = bodies.get(i);

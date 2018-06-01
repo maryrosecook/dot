@@ -19,11 +19,6 @@
                             state.get("remainingTokens"))
       })
       .update(harvestMessages)
-      .update(state => {
-        return state.update("messages", messages => {
-          return messages.concat(collisions(bodies(state)));
-        });
-      });
   };
 
   function bodies(state) {
@@ -34,7 +29,8 @@
 
   function harvestMessages(state) {
     const messages = state.getIn(["player", "messages"])
-          .concat(state.getIn(["tokens", "messages"]));
+          .concat(state.getIn(["tokens", "messages"]))
+          .concat(collisions(bodies(state)));
 
     return state.set("messages", messages)
       .setIn(["player", "messages"], im.List())

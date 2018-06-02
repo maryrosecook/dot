@@ -49,7 +49,7 @@
     screen.textAlign = "left";
     screen.fillStyle = "#000";
     screen.fillText(`THIS: ${thisTime}`, 10, 25);
-    screen.fillText(`HIGH: ${bestTime}`, 10, 50);
+    screen.fillText(`BEST: ${bestTime}`, 10, 50);
   };
 
   function drawBody(player, screen, scale) {
